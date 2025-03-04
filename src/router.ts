@@ -2,7 +2,7 @@ import { Router, Request, Response } from "express";
 
 const router = Router();
 
-// Auteticacion y registro de usuarios
+// Autenticacion y registro de usuarios
 router.post("/auth/register", (req: Request, res: Response) => {
     console.log(req.body);
     res.send("Registrado");
