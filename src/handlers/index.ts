@@ -8,7 +8,8 @@ export const createUser = async (req: Request, res: Response) => {
         const userExists = await User.findOne({ email });
 
         if (userExists) {
-            res.status(400).send("El usuario ya existe");
+            const error = new Error("El usuario ya existe");
+            res.status(409).json({ error: error.message });
             return;
         }
 
@@ -16,7 +17,7 @@ export const createUser = async (req: Request, res: Response) => {
 
         await user.save();
 
-        res.send("Registrado");
+        res.status(201).json({ message: "Usuario creado" });
     } catch (error) {
         console.log(error);
     }
