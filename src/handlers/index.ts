@@ -15,7 +15,7 @@ export const createUser = async (req: Request, res: Response) => {
         }
 
         // Hash password
-        const hashedPassword = hashPassword(password);
+        const hashedPassword = await hashPassword(password);
 
         // Create new user with hashed password
         const userData = {
@@ -30,8 +30,6 @@ export const createUser = async (req: Request, res: Response) => {
 
         res.status(201).json({ message: "Usuario creado" });
     } catch (error: any) {
-        console.log(error);
-        res.status(500).json({ error: "Error al crear el usuario" });
-        console.log(error);
+        res.status(500).json({ error: "Ha ocurrido un error" });
     }
 };
