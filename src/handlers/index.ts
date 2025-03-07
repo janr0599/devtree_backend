@@ -1,18 +1,10 @@
 import { Request, Response } from "express";
-import { validationResult } from "express-validator";
 import slug from "slug";
 import User from "../models/User";
 import { comparePassword, hashPassword } from "../utils/auth";
 
 export const createUser = async (req: Request, res: Response) => {
     const { email, password } = req.body;
-
-    // Validate request
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        res.status(400).json({ errors: errors.array() });
-        return;
-    }
 
     try {
         // Check if user exists
@@ -57,13 +49,6 @@ export const createUser = async (req: Request, res: Response) => {
 
 export const login = async (req: Request, res: Response) => {
     const { email, password } = req.body;
-
-    // Validate request
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        res.status(400).json({ errors: errors.array() });
-        return;
-    }
 
     try {
         // Check if user exists
