@@ -72,7 +72,7 @@ export const login = async (req: Request, res: Response) => {
             return;
         }
 
-        res.status(200).json({ message: "Usuario autenticado" });
+        res.status(200).json({ message: "Usuario autenticado corectamente" });
     } catch (error) {
         res.status(500).json({ error: "Ha ocurrido un error" });
     }
