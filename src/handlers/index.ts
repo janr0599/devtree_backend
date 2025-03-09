@@ -76,10 +76,7 @@ export const login = async (req: Request, res: Response) => {
         // Generate JWT
         const token = generateJWT({ id: user._id });
 
-        res.status(200).json({
-            message: "Usuario autenticado corectamente",
-            token,
-        });
+        res.status(200).json({ token });
     } catch (error) {
         res.status(500).json({ error: "Ha ocurrido un error" });
     }
