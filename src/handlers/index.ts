@@ -11,7 +11,7 @@ export const createUser = async (req: Request, res: Response) => {
         const userExists = await User.findOne({ email });
 
         if (userExists) {
-            const error = new Error("email ya registrado");
+            const error = new Error("Email ya registrado");
             res.status(409).json({ error: error.message });
             return;
         }
@@ -21,7 +21,7 @@ export const createUser = async (req: Request, res: Response) => {
         const handleExists = await User.findOne({ handle });
 
         if (handleExists) {
-            const error = new Error("handle no disponible");
+            const error = new Error("Handle no disponible");
             res.status(409).json({ error: error.message });
             return;
         }
@@ -41,7 +41,7 @@ export const createUser = async (req: Request, res: Response) => {
 
         await user.save();
 
-        res.status(201).json({ message: "Usuario creado" });
+        res.status(201).json({ message: "Cuenta registrada correctamente" });
     } catch (error) {
         res.status(500).json({ error: "Ha ocurrido un error" });
     }
