@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import slug from "slug";
 import User from "../models/User";
 import { comparePassword, hashPassword } from "../utils/auth";
+import { generateJWT } from "../utils/jwt";
 
 export const createUser = async (req: Request, res: Response) => {
     const { email, password } = req.body;
@@ -55,7 +56,7 @@ export const login = async (req: Request, res: Response) => {
         const user = await User.findOne({ email });
 
         if (!user) {
-            const error = new Error("usuario no encontrado");
+            const error = new Error("Usuario no encontrado");
             res.status(404).json({ error: error.message });
             return;
         }
@@ -67,12 +68,18 @@ export const login = async (req: Request, res: Response) => {
         );
 
         if (!isPasswordCorrect) {
-            const error = new Error("contraseña incorrecta");
+            const error = new Error("Contraseña incorrecta");
             res.status(401).json({ error: error.message });
             return;
         }
 
-        res.status(200).json({ message: "Usuario autenticado corectamente" });
+        // Generate JWT
+        const token = generateJWT({ id: user._id });
+
+        res.status(200).json({
+            message: "Usuario autenticado corectamente",
+            token,
+        });
     } catch (error) {
         res.status(500).json({ error: "Ha ocurrido un error" });
     }
