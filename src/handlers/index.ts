@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import slug from "slug";
 import User from "../models/User";
 import { comparePassword, hashPassword } from "../utils/auth";
-import { generateJWT, verifyJWT } from "../utils/jwt";
+import { generateJWT } from "../utils/jwt";
 
 export const createUser = async (req: Request, res: Response) => {
     const { email, password } = req.body;
