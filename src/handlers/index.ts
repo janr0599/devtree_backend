@@ -114,6 +114,6 @@ export const getUser = async (req: Request, res: Response) => {
             res.status(200).json({ user });
         }
     } catch (error) {
-        res.status(500).json({ error: "Ha ocurrido un error" });
+        res.status(500).json({ error: "There's been an error" });
     }
 };
