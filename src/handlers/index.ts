@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import slug from "slug";
 import User from "../models/User";
 import { comparePassword, hashPassword } from "../utils/auth";
-import { generateJWT } from "../utils/jwt";
+import { generateJWT, verifyJWT } from "../utils/jwt";
 
 export const createUser = async (req: Request, res: Response) => {
     const { email, password } = req.body;
@@ -77,6 +77,42 @@ export const login = async (req: Request, res: Response) => {
         const token = generateJWT({ id: user._id });
 
         res.status(200).json({ token });
+    } catch (error) {
+        res.status(500).json({ error: "Ha ocurrido un error" });
+    }
+};
+
+export const getUser = async (req: Request, res: Response) => {
+    const bearer = req.headers.authorization;
+
+    if (!bearer) {
+        const error = new Error("No Autorizado");
+        res.status(401).json({ error: error.message });
+        return;
+    }
+
+    const token = bearer.split(" ")[1];
+
+    if (!token) {
+        const error = new Error("No Autorizado");
+        res.status(401).json({ error: error.message });
+        return;
+    }
+
+    try {
+        const payload = verifyJWT(token);
+
+        if (typeof payload === "object" && payload.id) {
+            const user = await User.findById(payload.id).select("-password");
+
+            if (!user) {
+                const error = new Error("Usuario no encontrado");
+                res.status(404).json({ error: error.message });
+                return;
+            }
+
+            res.status(200).json({ user });
+        }
     } catch (error) {
         res.status(500).json({ error: "Ha ocurrido un error" });
     }
