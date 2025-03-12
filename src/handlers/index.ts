@@ -85,3 +85,31 @@ export const login = async (req: Request, res: Response) => {
 export const getUser = async (req: Request, res: Response) => {
     res.json({ user: req.user });
 };
+
+export const updateProfile = async (req: Request, res: Response) => {
+    try {
+        const { description } = req.body;
+
+        const handle = slug(req.body.handle, "");
+        const handleExists = await User.findOne({ handle });
+
+        if (
+            handleExists &&
+            handleExists._id.toString() !== req.user._id.toString()
+        ) {
+            const error = new Error("Handle no disponible");
+            res.status(409).json({ error: error.message });
+            return;
+        }
+
+        //Update user
+        req.user.handle = handle;
+        req.user.description = description;
+
+        await req.user.save();
+
+        res.status(200).json({ message: "Perfil actualizado correctamente" });
+    } catch (error) {
+        res.status(500).json({ error: "Ha ocurrido un error" });
+    }
+};
