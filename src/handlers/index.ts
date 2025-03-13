@@ -1,8 +1,10 @@
 import { Request, Response } from "express";
 import slug from "slug";
+import formidable from "formidable";
 import User from "../models/User";
 import { comparePassword, hashPassword } from "../utils/auth";
 import { generateJWT } from "../utils/jwt";
+import cloudinary from "../config/cloudinary";
 
 export const createUser = async (req: Request, res: Response) => {
     const { email, password } = req.body;
@@ -109,6 +111,38 @@ export const updateProfile = async (req: Request, res: Response) => {
         await req.user.save();
 
         res.status(200).json({ message: "Perfil actualizado correctamente" });
+    } catch (error) {
+        res.status(500).json({ error: "Ha ocurrido un error" });
+    }
+};
+
+export const uploadProfileImage = async (req: Request, res: Response) => {
+    const form = formidable({ multiples: false });
+
+    try {
+        form.parse(req, (error, fields, files) => {
+            cloudinary.uploader.upload(
+                files.file[0].filepath,
+                {},
+                async (error, result) => {
+                    if (error) {
+                        res.status(500).json({
+                            error: "Ha ocurrido un error al subir la imagen",
+                        });
+                        return;
+                    }
+                    if (result) {
+                        req.user.image = result.secure_url;
+                        await req.user.save();
+                        res.status(200).json({
+                            message:
+                                "Imagen de perfil actualizada correctamente",
+                            image: result.secure_url,
+                        });
+                    }
+                }
+            );
+        });
     } catch (error) {
         res.status(500).json({ error: "Ha ocurrido un error" });
     }
