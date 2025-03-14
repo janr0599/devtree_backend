@@ -4,6 +4,7 @@ import {
     createUser,
     getUser,
     login,
+    saveLinks,
     updateProfile,
     uploadProfileImage,
 } from "./handlers";
@@ -50,5 +51,17 @@ router.patch(
 
 // Subir imagen de perfil
 router.post("/user/image", authenticateUser, uploadProfileImage);
+
+// Guardar social links
+router.post(
+    "/user/links",
+    body("links")
+        .notEmpty()
+        .withMessage("Los links son requeridos")
+        .isString()
+        .withMessage("Los links deben ser un string"),
+    authenticateUser,
+    saveLinks
+);
 
 export default router;
