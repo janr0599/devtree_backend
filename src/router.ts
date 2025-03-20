@@ -7,6 +7,7 @@ import {
     saveLinks,
     updateProfile,
     uploadProfileImage,
+    getUserByHandle
 } from "./handlers";
 import { handleInputErrors } from "./middleware/validation";
 import { authenticateUser } from "./middleware/auth";
@@ -63,5 +64,8 @@ router.post(
     authenticateUser,
     saveLinks
 );
+
+// Get user by handle
+router.get("/:handle", getUserByHandle);
 
 export default router;

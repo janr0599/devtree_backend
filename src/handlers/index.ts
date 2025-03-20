@@ -161,3 +161,21 @@ export const saveLinks = async (req: Request, res: Response) => {
         res.status(500).json({ error: "Ha ocurrido un error" });
     }
 };
+
+export const getUserByHandle = async (req: Request, res: Response) => {
+    const { handle } = req.params;
+
+    try {
+        const user = await User.findOne({ handle }).select("-password -_id -__v -email");
+
+        if (!user) {
+            const error = new Error("Usuario no encontrado");
+            res.status(404).json({ error: error.message });
+            return;
+        }
+
+        res.status(200).json({ user });
+    } catch (error) {
+        res.status(500).json({ error: "Ha ocurrido un error" });
+    }
+};
