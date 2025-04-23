@@ -7,7 +7,8 @@ import {
     saveLinks,
     updateProfile,
     uploadProfileImage,
-    getUserByHandle
+    getUserByHandle,
+    checkHandleAvailable,
 } from "./handlers";
 import { handleInputErrors } from "./middleware/validation";
 import { authenticateUser } from "./middleware/auth";
@@ -67,5 +68,12 @@ router.post(
 
 // Get user by handle
 router.get("/:handle", getUserByHandle);
+
+// Check handle available
+router.post(
+    "/check-handle",
+    body("handle").notEmpty().withMessage("El handle es requerido"),
+    checkHandleAvailable
+);
 
 export default router;

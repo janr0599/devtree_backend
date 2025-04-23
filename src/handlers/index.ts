@@ -166,7 +166,9 @@ export const getUserByHandle = async (req: Request, res: Response) => {
     const { handle } = req.params;
 
     try {
-        const user = await User.findOne({ handle }).select("-password -_id -__v -email");
+        const user = await User.findOne({ handle }).select(
+            "-password -_id -__v -email"
+        );
 
         if (!user) {
             const error = new Error("Usuario no encontrado");
@@ -175,6 +177,26 @@ export const getUserByHandle = async (req: Request, res: Response) => {
         }
 
         res.status(200).json({ user });
+    } catch (error) {
+        res.status(500).json({ error: "Ha ocurrido un error" });
+    }
+};
+
+export const checkHandleAvailable = async (req: Request, res: Response) => {
+    const { handle } = req.body;
+
+    try {
+        const user = await User.findOne({ handle }).select(
+            "-password -_id -__v -email"
+        );
+
+        if (user) {
+            const error = new Error(`${handle} ya está en uso`);
+            res.status(409).json({ error: error.message });
+            return;
+        }
+
+        res.status(200).json({ message: `${handle} está disponible` });
     } catch (error) {
         res.status(500).json({ error: "Ha ocurrido un error" });
     }
